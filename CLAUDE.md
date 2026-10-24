@@ -24,9 +24,9 @@ The repo was spawned from **npm-package-template** and initialised with `/initia
   R-2935 adds `index.mjs`, the shipped `prettierignore` and the `"."` export. Update `files`, `exports` and
   `send-it`'s `shippablePaths` (in `.claude/skills/send-it/config.json` and the `.agents/` mirror)
   when the preset lands.
-- **Publishing is deferred to R-2936.** Clacks lists the repo with `release: null`, so it opens no
-  release-please PRs and the version stays at `0.0.0`. The `v0.0.0` **baseline tag** matches that
-  version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
+- **Publishing is deferred to R-2936.** Clacks registers the repo with `release: null`
+  (rheged-studio/clacks#178, pending), so it opens no release-please PRs and the version stays at
+  `0.0.0`. The `v0.0.0` **baseline tag** matches that version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
   `main` and the `changelog-enrich` job still fills post-merge changelog metadata. Do **not** delete
   that tag or bump the version by hand before R-2936 — an untagged version makes `Release` attempt an
   npm publish that fails without a Trusted Publisher.
@@ -114,8 +114,9 @@ There is no build. Three tsconfigs cover the repo's own tooling (not the shipped
   via `tsconfig.tools.json`.
 
 These move onto `@rheged-studio/tsconfig`'s `node-tooling` preset, with `checkJs` over `index.mjs`, when
-the preset lands (R-2935, R-2934 D3). `extends` does **not** inherit
-`include`/`exclude` — only `compilerOptions` — so each config restates its own.
+the preset lands (R-2935, R-2934 D3). `extends` inherits `files`/`include`/`exclude` from the base
+config (resolved relative to the base) unless the extending config sets its own, which then override;
+the tooling configs restate them to override the inherited values.
 
 ## Linting and formatting
 
@@ -274,8 +275,8 @@ orchestrator's inline finalise is retired later (R-801).
 ## Release workflow
 
 > **Dormant until R-2936.** `Release` is **enabled** here, but this repo has not been published yet:
-> Clacks lists it with `release: null` (no release PRs), and the `v0.0.0` baseline tag matches the
-> unbumped `0.0.0` version, so every push to `main` is a clean publish no-op while the
+> Clacks registers it with `release: null` (clacks#178; no release PRs), and the `v0.0.0` baseline
+> tag matches the unbumped `0.0.0` version, so every push to `main` is a clean publish no-op while the
 > `changelog-enrich` job still runs. The `release` job passes `build: false` (R-624 build-less
 > opt-out) because this config-only package has no `build` script. Everything below describes the
 > workflow once the bootstrap publish is done; the first real version will be above `0.0.0`.

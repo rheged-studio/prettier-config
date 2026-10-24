@@ -39,7 +39,8 @@ Done in R-2933:
 - [x] `Require GO/NO GO gate` and `Trunk` rulesets, both with the road-runner-bot bypass.
 - [x] `main`-only `npm-release` environment; `Release` workflow enabled.
 - [x] `v0.0.0` baseline tag, so `Release` no-ops the publish while `changelog-enrich` runs.
-- [ ] Registered in Clacks `fleet.json` with `release: null` (changelog only, no release PRs).
+- [ ] Registered in Clacks `fleet.json` with `release: null` (clacks#178; changelog only, no release
+      PRs).
 - [x] Claude review prerequisites inherited org-wide.
 
 Left for R-2936:
