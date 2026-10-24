@@ -1,0 +1,46 @@
+# Shared ignore list for @rheged-studio/prettier-config consumers (R-2934 D9).
+#
+# Pass it alongside the repo's own ignore files. A custom --ignore-path
+# replaces Prettier's defaults, so name those again:
+#
+#   prettier --check . \
+#     --ignore-path .gitignore \
+#     --ignore-path .prettierignore \
+#     --ignore-path node_modules/@rheged-studio/prettier-config/prettierignore
+#
+# Patterns resolve from the working directory, with .gitignore semantics: a
+# bare `dist/` matches a dist directory at any depth, but a pattern with an
+# inner slash is anchored to the root, hence the `**/` prefixes below.
+
+# Lockfiles: written by the package manager, never by hand.
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb
+
+# Build and tool output.
+dist/
+build/
+coverage/
+storybook-static/
+.astro/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+.turbo/
+.vercel/
+.wrangler/
+.nx/
+worker-configuration.d.ts
+
+# Vendored agent-skill bundles: installed with `skills add --copy` and
+# overwritten on every refresh.
+**/.claude/skills/
+**/.agents/skills/
+
+# Changelogs: the dated entries are rewritten by the post-merge enricher, and
+# a root CHANGELOG.md is generated.
+changelog/
+CHANGELOG.md

@@ -27,9 +27,13 @@
   },
   "type": "module",
   "exports": {
+    ".": "./index.mjs",
+    "./prettierignore": "./prettierignore",
     "./package.json": "./package.json"
   },
   "files": [
+    "index.mjs",
+    "prettierignore",
     "README.md"
   ],
   "scripts": {
@@ -41,8 +45,8 @@
     "ci:watch": "gh run watch $(gh run list -L 1 --json databaseId -q '.[0].databaseId // empty')",
     "clean": "rimraf node_modules",
     "format": "prettier --write .",
-    "lint": "eslint infrastructure/tests --cache --cache-location ./.eslintcache",
-    "lint:fix": "eslint infrastructure/tests --fix --cache --cache-location ./.eslintcache",
+    "lint": "eslint index.mjs prettier.config.mjs infrastructure/tests --cache --cache-location ./.eslintcache",
+    "lint:fix": "eslint index.mjs prettier.config.mjs infrastructure/tests --fix --cache --cache-location ./.eslintcache",
     "lint:md": "markdownlint-cli2 '**/*.{md,mdx}' '!**/node_modules/**' '!**/dist/**' '!**/.turbo/**' '!**/.astro/**' '!**/.claude/skills/**' '!**/.agents/skills/**'",
     "lint:md:fix": "markdownlint-cli2 --fix '**/*.{md,mdx}' '!**/node_modules/**' '!**/dist/**' '!**/.turbo/**' '!**/.astro/**' '!**/.claude/skills/**' '!**/.agents/skills/**'",
     "lint:sh": "bash -c 'if command -v shellcheck >/dev/null 2>&1; then shellcheck infrastructure/scripts/*.sh .husky/pre-commit .husky/pre-push .husky/commit-msg; elif [ \"$(uname -s)\" = \"Darwin\" ]; then echo \"⚠️  shellcheck not installed — skipping. Install: brew install shellcheck\"; else echo \"⚠️  shellcheck not installed — skipping. Install: apt-get install shellcheck\"; fi'",
@@ -100,6 +104,9 @@
     "tsx": "^4.21.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.5.3"
   },
   "packageManager": "pnpm@10.33.0",
   "engines": {
