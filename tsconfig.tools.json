@@ -4,8 +4,10 @@
   "extends": "./tsconfig.json",
   "include": [
     "eslint.config.ts",
+    "index.mjs",
     "infrastructure/scripts/**/*.ts",
     "infrastructure/tests/**/*.ts",
+    "prettier.config.mjs",
     "vitest.config.ts"
   ]
 }
