@@ -1,20 +1,24 @@
 {
-  "name": "@rheged-studio/npm-package-template",
+  "name": "@rheged-studio/prettier-config",
   "version": "0.0.0",
-  "description": "Template repository for Rheged Studio npm packages — rename and fill src/ when generating a new package.",
+  "description": "Shared Prettier preset for the Rheged Studio estate: pinned Prettier defaults with the Tailwind CSS and Astro plugins built in.",
   "keywords": [
-    "template",
-    "npm-package",
-    "typescript",
-    "boilerplate"
+    "prettier",
+    "prettier-config",
+    "prettierconfig",
+    "prettier-plugin-tailwindcss",
+    "prettier-plugin-astro",
+    "tailwindcss",
+    "astro",
+    "rheged-studio"
   ],
-  "homepage": "https://github.com/rheged-studio/npm-package-template#readme",
+  "homepage": "https://github.com/rheged-studio/prettier-config#readme",
   "bugs": {
-    "url": "https://github.com/rheged-studio/npm-package-template/issues"
+    "url": "https://github.com/rheged-studio/prettier-config/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rheged-studio/npm-package-template.git"
+    "url": "https://github.com/rheged-studio/prettier-config.git"
   },
   "license": "MIT",
   "author": {

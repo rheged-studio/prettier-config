@@ -1,10 +1,6 @@
-<!-- init:context -->
+# prettier-config
 
-# npm-package-template
-
-A GitHub template for publishable npm packages: a TypeScript package skeleton plus the full release-please, OIDC publish and dated-changelog shell. It exists so a new package starts with the estate's build, release and publish machinery already wired.
-
-<!-- /init:context -->
+Shared Prettier preset for the Rheged Studio estate: pinned Prettier defaults with the Tailwind CSS and Astro plugins built in.
 
 ## Language
 
@@ -61,37 +57,3 @@ _Avoid_: Changeset, release note
 **Finalise**:
 The post-merge step, run by `pkg-release.yml`'s `changelog-enrich` job in `mode: finalise`, that fills a changelog entry's `merged_at`, `commit`, `pr` and `stats` and stamps `version` once release-please has cut a release.
 _Avoid_: Enrich, stamp
-
-<!-- init:template-only -->
-
-### Template
-
-**Spawn**:
-To create a new repo from this template with GitHub's "Use this template". A spawn copies the file tree but not rulesets, environments, repo settings or org wiring.
-_Avoid_: Fork, clone, generate
-
-**Spawned repo**:
-A repo created by spawning this template, before and after it has been initialised.
-_Avoid_: Child repo, derived repo
-
-**initialise-package-repo**:
-The repo-local, one-shot skill that takes a spawned repo to a release-ready state: file resets, skills pull, skill configs and GitHub settings. It is dry-run first and a second run is a no-op.
-_Avoid_: Scaffolder, setup script, init script
-
-**Placeholder identity**:
-The template's own name, `@rheged-studio/npm-package-template`, as it appears in `package.json` and repo config, together with the placeholder `src/` API. While it is present the repo counts as not yet renamed.
-_Avoid_: Default name, template name
-
-**Bootstrap skill bundle**:
-A shared skill copied into the template tree only so `initialise-package-repo` can run straight after a spawn. The spawned repo replaces it with a pull from `agent-skills`.
-_Avoid_: Vendored skills, frozen skills
-
-**Changelog poisoning**:
-The failure where the template's own dated entries survive into a spawned repo and finalise sweeps them into its first release notes. Resetting `changelog/` to its README prevents it.
-_Avoid_: Stale changelog, changelog leakage
-
-**Disabled Release workflow**:
-The template repo's own `Release` workflow, switched off because its placeholder `src/` is never published. The spawned repo re-enables it once its `npm-release` environment exists.
-_Avoid_: Paused release, broken release
-
-<!-- /init:template-only -->
