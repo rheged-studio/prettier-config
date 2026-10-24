@@ -26,9 +26,10 @@ The repo was spawned from **npm-package-template** and initialised with `/initia
   mirror) match. The preset loads `prettier-plugin-astro` (pinned `~0.14.1`, D11) and
   `prettier-plugin-tailwindcss` from its own dependencies by absolute path (R-2931, D2/D8/D13); the
   Prettier peer floor is `>=3.7.0` (D12).
-- **Publishing is deferred to R-2936.** Clacks lists the repo with `release: null`, so it opens no
-  release-please PRs and the version stays at `0.0.0`. The `v0.0.0` **baseline tag** matches that
-  version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
+- **Publishing is deferred to R-2936.** Clacks registers the repo with `release: null`
+  (rheged-studio/clacks#178, pending), so it opens no release-please PRs and the version stays at
+  `0.0.0`. The `v0.0.0` **baseline tag** matches that version, so `pkg-release.yml` (the `Release`
+  workflow, enabled) skips publishing on every push to
   `main` and the `changelog-enrich` job still fills post-merge changelog metadata. Do **not** delete
   that tag or bump the version by hand before R-2936 — an untagged version makes `Release` attempt an
   npm publish that fails without a Trusted Publisher.
@@ -119,8 +120,9 @@ There is no build. Three tsconfigs type-check the shipped preset and the repo's 
   ESLint config itself is excluded (the preset's global ignores skip it), so it is type-checked only
   via `tsconfig.tools.json`.
 
-`extends` does **not** inherit
-`include`/`exclude` — only `compilerOptions` — so each config restates its own.
+`extends` inherits `files`/`include`/`exclude` from the base config (resolved relative to the base)
+unless the extending config sets its own, which then override; the tooling configs restate them to
+override the inherited values.
 
 ## Linting and formatting
 
@@ -279,8 +281,8 @@ orchestrator's inline finalise is retired later (R-801).
 ## Release workflow
 
 > **Dormant until R-2936.** `Release` is **enabled** here, but this repo has not been published yet:
-> Clacks lists it with `release: null` (no release PRs), and the `v0.0.0` baseline tag matches the
-> unbumped `0.0.0` version, so every push to `main` is a clean publish no-op while the
+> Clacks registers it with `release: null` (clacks#178; no release PRs), and the `v0.0.0` baseline
+> tag matches the unbumped `0.0.0` version, so every push to `main` is a clean publish no-op while the
 > `changelog-enrich` job still runs. The `release` job passes `build: false` (R-624 build-less
 > opt-out) because this config-only package has no `build` script. Everything below describes the
 > workflow once the bootstrap publish is done; the first real version will be above `0.0.0`.
