@@ -20,10 +20,10 @@ Tailwind plugin in **R-2931**, and the first publish is **R-2936**.
 The repo was spawned from **npm-package-template** and initialised with `/initialise-package-repo`
 (R-2933). The template's build leg was stripped to make it config-only. Current state:
 
-- **No preset yet.** `files` is `["README.md"]` and `exports` exposes only `./package.json` until
-  R-2935 adds `index.mjs`, the shipped `prettierignore` and the `"."` export. Update `files`, `exports` and
-  `send-it`'s `shippablePaths` (in `.claude/skills/send-it/config.json` and the `.agents/` mirror)
-  when the preset lands.
+- **The preset ships (R-2935).** `index.mjs` pins every Prettier formatting option to its default
+  (R-2934 D1) and `prettierignore` is the shared ignore list (D9). `files` and `exports` list both,
+  and `send-it`'s `shippablePaths` (in `.claude/skills/send-it/config.json` and the `.agents/`
+  mirror) match. The Tailwind and Astro plugins land next (R-2931).
 - **Publishing is deferred to R-2936.** Clacks lists the repo with `release: null`, so it opens no
   release-please PRs and the version stays at `0.0.0`. The `v0.0.0` **baseline tag** matches that
   version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
@@ -95,17 +95,21 @@ Each shared-bundle skill ships a neutral `config.example.json`. The real `config
 ## Source layout
 
 This is a **config-only** package (R-2933): there is no `src/` and no build. The published surface
-will be the preset module `index.mjs` and the shipped `prettierignore` (R-2935); until then `files` is `["README.md"]` and `exports` exposes
-only `./package.json`. The workflow/release shell — `.github/`, `infrastructure/`, `.husky/`,
+is the preset module `index.mjs` (`exports["."]`) and the shared ignore list `prettierignore`
+(`exports["./prettierignore"]`), plus `./package.json` (R-2935). Test fixtures live in `fixtures/`
+(`formatted/`, `unformatted/`, `ignored/`); `infrastructure/tests/preset.test.ts` installs the
+packed tarball into consumers under the gitignored `.fixtures/`. The workflow/release shell — `.github/`, `infrastructure/`, `.husky/`,
 `changelog/`, `release-please-config.json`, `.release-please-manifest.json` — is **not** part of the
 published artifact.
 
 ## Build / type-check / lint topology
 
-There is no build. Three tsconfigs cover the repo's own tooling (not the shipped preset):
+There is no build. Three tsconfigs type-check the shipped preset and the repo's own tooling:
 
-- **`tsconfig.json`** — the shared compiler options, `noEmit`, spanning `eslint.config.ts`,
-  `vitest.config.ts` and any infrastructure `.ts`. Editors resolve against it.
+- **`tsconfig.json`** — extends `@rheged-studio/tsconfig/node-tooling` and adds `allowJs` +
+  `checkJs`, so the JSDoc `@type {import("prettier").Config}` on `index.mjs` is enforced (R-2934
+  D3). It spans `index.mjs`, `prettier.config.mjs`, `eslint.config.ts`, `vitest.config.ts` and the
+  infrastructure `.ts`. Editors resolve against it.
 - **`tsconfig.tools.json`** — `extends ./tsconfig.json` over the same files. `pnpm tsc` runs it, and
   CI's `build-test` typecheck lane runs it (`tsconfig: tsconfig.tools.json`).
 - **`tsconfig.eslint.json`** — the linter's project. `eslint.config.ts` pins
@@ -113,8 +117,7 @@ There is no build. Three tsconfigs cover the repo's own tooling (not the shipped
   ESLint config itself is excluded (the preset's global ignores skip it), so it is type-checked only
   via `tsconfig.tools.json`.
 
-These move onto `@rheged-studio/tsconfig`'s `node-tooling` preset, with `checkJs` over `index.mjs`, when
-the preset lands (R-2935, R-2934 D3). `extends` does **not** inherit
+`extends` does **not** inherit
 `include`/`exclude` — only `compilerOptions` — so each config restates its own.
 
 ## Linting and formatting
@@ -123,7 +126,7 @@ This package dogfoods the org's own shared configs:
 
 - **ESLint** — `eslint.config.ts` consumes `@rheged-studio/eslint-config`, composing the `base` stack plus the `typescript` overrides, then adds two local blocks: an `infrastructure/**/*.ts` override (`complexity: off` + `import/no-extraneous-dependencies` with `devDependencies: true`, since the shell scripts legitimately import devDeps), and the `tsconfig.eslint.json` project pin (see above). The preset also re-exports opt-in presets (`testing`, `frameworkRouting`, `astro`, `sanity`, `storybook`, `tableComponents`) — pull them in as a generated package needs them. The config is authored in `.ts` (loaded by `jiti`, a devDependency ESLint v9.18+ requires for TypeScript config) and wrapped in `defineConfig` from `eslint/config`, so the whole array — including the two local override blocks — is type-checked against the preset's shipped types instead of only failing at lint-run time. `pnpm tsc` type-checks it via `tsconfig.tools.json`.
 - **Markdown** — `.markdownlint-cli2.jsonc` extends `@rheged-studio/markdownlint-config`. Pre-commit auto-fixes staged `**/*.{md,mdx}` via lint-staged (`|| true`, so it never blocks); the `lint` reusable caller (markdown lane) enforces. (There is no root `CHANGELOG.md` to exclude — release-please runs with `skip-changelog`.)
-- **Prettier** — `pnpm format` runs `prettier --write .`; `.prettierignore` excludes `node_modules`, `dist`, `pnpm-lock.yaml`, and `tsconfig.json`.
+- **Prettier** — the repo formats itself with the preset it ships: `prettier.config.mjs` re-exports `@rheged-studio/prettier-config` through the package's own `exports` map. `pnpm format` runs `prettier --write .`; `.prettierignore` excludes `node_modules`, `dist`, `pnpm-lock.yaml`, `tsconfig.json` and the deliberately unformatted fixtures (`fixtures/unformatted/`, `fixtures/ignored/`, `.fixtures/`).
 
 ## GitHub Actions repo config
 
