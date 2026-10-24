@@ -26,16 +26,15 @@ The repo was spawned from **npm-package-template** and initialised with `/initia
   mirror) match. The preset loads `prettier-plugin-astro` (pinned `~0.14.1`, D11) and
   `prettier-plugin-tailwindcss` from its own dependencies by absolute path (R-2931, D2/D8/D13); the
   Prettier peer floor is `>=3.7.0` (D12).
-- **Publishing is deferred to R-2936.** Clacks lists the repo with `release: null`, so it opens no
-  release-please PRs and the version stays at `0.0.0`. The `v0.0.0` **baseline tag** matches that
-  version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
-  `main` and the `changelog-enrich` job still fills post-merge changelog metadata. Do **not** delete
-  that tag or bump the version by hand before R-2936 — an untagged version makes `Release` attempt an
-  npm publish that fails without a Trusted Publisher.
-- **Already applied (R-2933):** the `GO/NO GO` and `Trunk` rulesets with the road-runner-bot bypass,
-  the `main`-only `npm-release` environment, `Release` enabled, and the skill configs (Linear key
-  `R`). Still to do at first publish (R-2936): the bootstrap publish, the Trusted Publisher, and
-  flipping the Clacks `fleet.json` entry to `release: "npm"`.
+- **Published (R-2936).** `0.1.0` was bootstrap-published by hand (passkey) and tagged `v0.1.0`
+  with a GitHub Release, which is release-please's baseline. The npm Trusted Publisher is bound to
+  `pkg-release.yml`, and the Clacks `fleet.json` entry is `release: "npm"`. From publish #2 onwards:
+  merge feature PRs → Clacks opens the release-please PR and squash-merges it once `GO/NO GO` is
+  green → `pkg-release.yml` publishes through OIDC. The `v0.0.0` baseline tag from R-2933 stays as
+  history. Never bump the version by hand: an untagged version makes `Release` publish it.
+- **Applied at scaffold (R-2933):** the `GO/NO GO` and `Trunk` rulesets with the road-runner-bot
+  bypass, the `main`-only `npm-release` environment, `Release` enabled, and the skill configs
+  (Linear key `R`).
 
 The template's generation checklist and its [README Setup section](README.md#setup) are kept as the
 reference for what the release shell expects.
@@ -278,12 +277,9 @@ orchestrator's inline finalise is retired later (R-801).
 
 ## Release workflow
 
-> **Dormant until R-2936.** `Release` is **enabled** here, but this repo has not been published yet:
-> Clacks lists it with `release: null` (no release PRs), and the `v0.0.0` baseline tag matches the
-> unbumped `0.0.0` version, so every push to `main` is a clean publish no-op while the
-> `changelog-enrich` job still runs. The `release` job passes `build: false` (R-624 build-less
-> opt-out) because this config-only package has no `build` script. Everything below describes the
-> workflow once the bootstrap publish is done; the first real version will be above `0.0.0`.
+> **Live since R-2936.** `0.1.0` was bootstrap-published by hand and tagged `v0.1.0`; CI publishes every
+> later version through the Trusted Publisher. The `release` job passes `build: false`
+> (R-624 build-less opt-out) because this config-only package has no `build` script.
 >
 > **Thin caller (R-639).** The release workflow is `.github/workflows/pkg-release.yml` — a thin caller of the estate's shared `reusable-pkg-release.yml` (SHA-pinned to v1.0.2), mirroring eslint-config. A `config` job loads `infrastructure/repo-config.yaml` and passes `npm-scope` / `node-version-file` / the registry URLs to the reusable workflow, which holds all the release logic described below. The file is `pkg-release.yml` (npm Trusted Publishing binds its OIDC subject to repository + workflow **filename**, so configure the Trusted Publisher against `pkg-release.yml`), but the workflow **name** stays `Release` so `gh workflow enable/disable Release` still works.
 
