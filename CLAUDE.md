@@ -23,7 +23,9 @@ The repo was spawned from **npm-package-template** and initialised with `/initia
 - **The preset ships (R-2935).** `index.mjs` pins every Prettier formatting option to its default
   (R-2934 D1) and `prettierignore` is the shared ignore list (D9). `files` and `exports` list both,
   and `send-it`'s `shippablePaths` (in `.claude/skills/send-it/config.json` and the `.agents/`
-  mirror) match. The Tailwind and Astro plugins land next (R-2931).
+  mirror) match. The preset loads `prettier-plugin-astro` (pinned `~0.14.1`, D11) and
+  `prettier-plugin-tailwindcss` from its own dependencies by absolute path (R-2931, D2/D8/D13); the
+  Prettier peer floor is `>=3.7.0` (D12).
 - **Publishing is deferred to R-2936.** Clacks lists the repo with `release: null`, so it opens no
   release-please PRs and the version stays at `0.0.0`. The `v0.0.0` **baseline tag** matches that
   version, so `pkg-release.yml` (the `Release` workflow, enabled) skips publishing on every push to
