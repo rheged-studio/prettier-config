@@ -29,8 +29,8 @@ _Avoid_: Build & Lint, CI gate, status check
 ### Publishing
 
 **Publish surface**:
-What the package exposes to consumers: the entry point at `src/index.ts`, built into `dist/`. Everything else in the repo is shell and is not published.
-_Avoid_: Public API, exports map
+What the package exposes to consumers: the preset module `index.mjs` and the shipped `prettierignore`, listed in `files` and `exports` (added in R-2935). There is no `src/` or `dist/`; everything else in the repo is shell and is not published.
+_Avoid_: Public API, build output
 
 **Trusted Publishing**:
 npm's OIDC-based publish authentication, bound to this repo and the `pkg-release.yml` workflow filename, so CI publishes without any `NPM_TOKEN` secret.
