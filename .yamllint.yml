@@ -41,3 +41,4 @@ ignore: |
   .turbo/
   **/.turbo/
   pnpm-lock.yaml
+  .fixtures/

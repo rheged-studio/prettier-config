@@ -1,0 +1,7 @@
+---
+name: fixture
+list:
+  - 1
+  - 2
+nested:
+  a: true
