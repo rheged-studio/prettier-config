@@ -1,0 +1,9 @@
+---
+const { title, active } = Astro.props;
+---
+
+<section class="mt-2 flex bg-red-500 p-4 text-white">
+  <h1 class:list={["text-2xl font-bold", active && "block underline"]}>
+    {title}
+  </h1>
+</section>
