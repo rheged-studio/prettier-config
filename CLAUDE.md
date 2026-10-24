@@ -118,8 +118,9 @@ There is no build. Three tsconfigs type-check the shipped preset and the repo's 
   ESLint config itself is excluded (the preset's global ignores skip it), so it is type-checked only
   via `tsconfig.tools.json`.
 
-`extends` does **not** inherit
-`include`/`exclude` — only `compilerOptions` — so each config restates its own.
+`extends` inherits `files`/`include`/`exclude` from the base config (resolved relative to the base)
+unless the extending config sets its own, which then override; the tooling configs restate them to
+override the inherited values.
 
 ## Linting and formatting
 
