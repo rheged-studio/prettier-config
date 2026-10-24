@@ -1,6 +1,6 @@
 {
   "name": "@rheged-studio/prettier-config",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared Prettier preset for the Rheged Studio estate: pinned Prettier defaults with the Tailwind CSS and Astro plugins built in.",
   "keywords": [
     "prettier",
