@@ -27,4 +27,5 @@ stats:
 
 - Stripped the template's build leg to make the package config-only: no `src/`, no `tsc` build, `build: false` in `ci.yml` and `pkg-release.yml`, and a typecheck lane over `tsconfig.tools.json`.
 - `files` and `exports` ship only `README.md` and `./package.json` until the preset lands ([R-2935](https://linear.app/rheged-studio/issue/R-2935)).
-- Documented the dormant release state in `CLAUDE.md` and `README.md`: the `v0.0.0` baseline tag and Clacks `release: null` keep `Release` from publishing until the first publish ([R-2936](https://linear.app/rheged-studio/issue/R-2936)), while `changelog-enrich` still runs.
+- Documented the dormant release state in `CLAUDE.md` and `README.md`: the `v0.0.0` baseline tag and Clacks `release: null` (registration pending in rheged-studio/clacks#178) keep `Release` from publishing until the first publish ([R-2936](https://linear.app/rheged-studio/issue/R-2936)), while `changelog-enrich` still runs.
+- Documented in `CLAUDE.md` that tsconfig `extends` inherits `files`/`include`/`exclude` from the base config unless the extending config sets its own, so the tooling configs restate them to override the inherited values.
