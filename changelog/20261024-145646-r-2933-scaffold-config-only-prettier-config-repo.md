@@ -1,21 +1,22 @@
 ---
-title: "Scaffold the config-only @rheged-studio/prettier-config repo"
+title: Scaffold the config-only @rheged-studio/prettier-config repo
 release_note:
 created_at: "2026-10-24T14:56:46Z"
-merged_at:
-branch: "r-2933-scaffold-rheged-studioprettier-config-from-npm-package"
-pr:
-commit:
-author: "rob@rheged.studio"
+merged_at: "2026-10-25T10:34:00Z"
+branch: r-2933-scaffold-rheged-studioprettier-config-from-npm-package
+pr: 1
+commit: 4440cda
+author: rob@rheged.studio
 co_authors: []
 category: chore
 breaking: false
-issues: ["R-2933"]
+issues:
+  - R-2933
 affected_packages: []
 stats:
-  files_changed:
-  loc_added:
-  loc_removed:
+  files_changed: 202
+  loc_added: 4554
+  loc_removed: 2427
   commits:
 ---
 
