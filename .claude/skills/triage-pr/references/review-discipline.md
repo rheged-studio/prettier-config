@@ -144,7 +144,7 @@ thread with the `follow-up` reply. When Linear capture is disabled or fails clos
 leave the thread unresolved and report it as an outstanding gated item. It is still
 never applied.
 
-## Symmetric reply + resolve — recorded decisions (A-410)
+## Symmetric reply + resolve — recorded decisions (R-410)
 
 The reception above is symmetric on purpose. These are the decisions that settled
 how it is implemented, recorded so the SKILL.md steps have something to point at.
@@ -217,11 +217,11 @@ implies success without fresh verification breaks this rule.
 
 Proving commands by claim:
 
-| Claim          | Proof                                                                                                                                                                                                                        |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lint clean     | the lint command's output showing zero errors                                                                                                                                                                                |
-| Tests pass     | the test command's output showing zero failures                                                                                                                                                                              |
-| Build succeeds | the build command exiting `0`                                                                                                                                                                                                |
-| Manifest valid | `npx --yes skills-ref@0.1.5 validate ./skills/<name>` exiting `0`                                                                                                                                                            |
-| CI green       | every required context from the base branch's rules present and successful on the head commit (`gh pr checks <pr> --required` is the quick view; a missing required check is pending; non-required checks are informational) |
-| Bug fixed      | the original failing symptom now passing                                                                                                                                                                                     |
+| Claim          | Proof                                                                                                                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Lint clean     | the lint command's output showing zero errors                                                                                                                                                                                        |
+| Tests pass     | the test command's output showing zero failures                                                                                                                                                                                      |
+| Build succeeds | the build command exiting `0`                                                                                                                                                                                                        |
+| Manifest valid | `npx --yes skills-ref@0.1.5 validate ./skills/<name>` exiting `0`                                                                                                                                                                    |
+| CI green       | every required context from the base branch's rules present and successful on the head commit (`scripts/wait-checks.mjs` applies this test — `ci=green`; a missing required check is pending; non-required checks are informational) |
+| Bug fixed      | the original failing symptom now passing                                                                                                                                                                                             |
