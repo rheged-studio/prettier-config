@@ -1,21 +1,22 @@
 ---
-title: "Ship the pinned-defaults preset and shared ignore list"
+title: Ship the pinned-defaults preset and shared ignore list
 release_note: "Adds `@rheged-studio/prettier-config`: a Prettier preset that pins every formatting option to Prettier's default, plus a shared `prettierignore` for `--ignore-path`."
 created_at: "2026-10-24T15:13:03Z"
-merged_at:
-branch: "r-2935-author-the-v1-preset-fixture-tests-and-readme"
-pr:
-commit:
-author: "rob@rheged.studio"
+merged_at: "2026-10-25T10:42:28Z"
+branch: r-2935-author-the-v1-preset-fixture-tests-and-readme
+pr: 2
+commit: 1a728a2
+author: rob@rheged.studio
 co_authors: []
 category: feature
 breaking: false
-issues: ["R-2935"]
+issues:
+  - R-2935
 affected_packages: []
 stats:
-  files_changed:
-  loc_added:
-  loc_removed:
+  files_changed: 35
+  loc_added: 619
+  loc_removed: 54
   commits:
 ---
 
