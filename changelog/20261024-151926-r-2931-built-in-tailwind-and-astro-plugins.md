@@ -1,21 +1,22 @@
 ---
-title: "Load the Tailwind CSS and Astro plugins in the preset"
-release_note: "The preset now sorts Tailwind classes, including in `.astro` files and `cn()`/`clsx()` calls, with `prettier-plugin-tailwindcss` and `prettier-plugin-astro` built in. Consumers no longer install the plugins, set `tailwindStylesheet` for their Tailwind v4 entry point, and need Prettier 3.7 or later."
+title: Load the Tailwind CSS and Astro plugins in the preset
+release_note: The preset now sorts Tailwind classes, including in `.astro` files and `cn()`/`clsx()` calls, with `prettier-plugin-tailwindcss` and `prettier-plugin-astro` built in. Consumers no longer install the plugins, set `tailwindStylesheet` for their Tailwind v4 entry point, and need Prettier 3.7 or later.
 created_at: "2026-10-24T15:19:26Z"
-merged_at:
-branch: "r-2931-load-prettier-plugin-tailwindcss-in-the-shared-preset-with-a"
-pr:
-commit:
-author: "rob@rheged.studio"
+merged_at: "2026-10-25T10:49:06Z"
+branch: r-2931-load-prettier-plugin-tailwindcss-in-the-shared-preset-with-a
+pr: 3
+commit: 109efa2
+author: rob@rheged.studio
 co_authors: []
 category: feature
 breaking: false
-issues: ["R-2931"]
+issues:
+  - R-2931
 affected_packages: []
 stats:
-  files_changed:
-  loc_added:
-  loc_removed:
+  files_changed: 21
+  loc_added: 290
+  loc_removed: 22
   commits:
 ---
 
