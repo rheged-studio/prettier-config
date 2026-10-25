@@ -1,6 +1,6 @@
 {
   "baseBranch": "main",
-  "shippablePaths": ["README.md"],
+  "shippablePaths": ["index.mjs", "prettierignore", "README.md"],
   "shippableManifestKeys": ["name", "version", "files", "publishConfig"],
   "changelog": true,
   "triage": true

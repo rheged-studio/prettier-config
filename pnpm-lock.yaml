@@ -23,6 +23,9 @@ importers:
       '@rheged-studio/markdownlint-config':
         specifier: ^3.0.0
         version: 3.0.1
+      '@rheged-studio/tsconfig':
+        specifier: ^0.2.0
+        version: 0.2.0(typescript@6.0.3)
       '@types/node':
         specifier: ^25.6.0
         version: 25.9.5
@@ -45,7 +48,7 @@ importers:
         specifier: ^0.18.1
         version: 0.18.1
       prettier:
-        specifier: ^3.0.0
+        specifier: ^3.9.6
         version: 3.9.6
       prettier-plugin-tailwindcss:
         specifier: ^0.8.0
@@ -709,6 +712,15 @@ packages:
   '@rheged-studio/markdownlint-config@3.0.1':
     resolution: {integrity: sha512-kUaE/3d0f7cYMrLhIYoxmXN+O7YQc2s2204OZ6nZRRr2MlEKWm5d7AZRG9eRyzTKgYSj0TtATRnK1lmrUmwxBQ==}
     engines: {node: '>=22'}
+
+  '@rheged-studio/tsconfig@0.2.0':
+    resolution: {integrity: sha512-0DiK119BzcKFxZYYU+BsM7l5L6yA/f5OJL6UHwj9/+JX14QmWoTcwIC7LNp9LvX8L62QMb3VrKHREHvQNiiMvQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      typescript: '>=6'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   '@rolldown/binding-android-arm-eabi@1.2.5':
     resolution: {integrity: sha512-DLe/i+l8ynIBY7XEQ191TeZvCoowIGa18R+dIV30GW7DiOtp74i/xX8hs8GUjW5ARV7VZuie3d6AumSmCwbeRA==}
@@ -4468,6 +4480,10 @@ snapshots:
       - zod
 
   '@rheged-studio/markdownlint-config@3.0.1': {}
+
+  '@rheged-studio/tsconfig@0.2.0(typescript@6.0.3)':
+    optionalDependencies:
+      typescript: 6.0.3
 
   '@rolldown/binding-android-arm-eabi@1.2.5':
     optional: true

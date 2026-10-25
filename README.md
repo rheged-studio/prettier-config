@@ -1,30 +1,106 @@
 # @rheged-studio/prettier-config
 
-The shared Prettier preset for the Rheged Studio estate: Prettier's defaults, pinned explicitly, with
-the Tailwind CSS and Astro plugins built in. Consumers point Prettier at the preset instead of
-copying a `.prettierrc` and installing the plugins themselves.
+The shared Prettier preset for the Rheged Studio estate. It pins every Prettier formatting option to
+Prettier's own default, so adopting it reformats nothing in a repo that already runs Prettier
+unconfigured, and a future change to a Prettier default only reaches the estate through a
+deliberate release of this package. The Tailwind CSS and Astro plugins join the preset in R-2931,
+so consumers stop installing them by hand.
 
-> **Status: pre-release.** No preset ships yet and the package is not on npm. The v1 shape is
-> settled in the **prettier-config** Linear project (R-2934); the base preset lands in R-2935, the
-> Tailwind plugin in R-2931 and the first publish in R-2936.
+> **Status: pre-release.** The package is not on npm yet; the first publish is R-2936. The v1
+> decisions are recorded on R-2934 in the **prettier-config** Linear project.
 
 ## Requirements
 
-- Prettier 3 (R-2934, D4).
+- Prettier `>=3.5.3` (a peer dependency with no upper cap; R-2934 D4, D12).
 - Node 22 and pnpm (pinned via `packageManager`) to work on this repo.
+
+## Install
+
+```bash
+pnpm add -D prettier @rheged-studio/prettier-config
+```
+
+## Use
+
+Point Prettier at the preset from `package.json`:
+
+```json
+{
+  "prettier": "@rheged-studio/prettier-config"
+}
+```
+
+When a repo needs its own overrides, use `prettier.config.mjs` and spread the preset instead.
+Delete any `.prettierrc*` file, since Prettier stops at the first config it finds:
+
+```js
+import preset from "@rheged-studio/prettier-config";
+
+/** @type {import("prettier").Config} */
+export default {
+  ...preset,
+  overrides: [
+    ...(preset.overrides ?? []),
+    { files: "*.md", options: { proseWrap: "always" } },
+  ],
+};
+```
+
+Keep the preset's `overrides` when you add your own, as above. Changing a pinned option locally is
+possible, but it moves the repo away from the estate's formatting; raise it here instead if every
+repo should change.
+
+## Shared ignore list
+
+A config package can't extend `.prettierignore`, so the package ships its ignore list as
+`prettierignore` (R-2934 D9). It covers lockfiles, build and tool output, the vendored
+`.claude/skills/` and `.agents/skills/` bundles, and `changelog/`.
+
+Pass it with `--ignore-path`. A custom `--ignore-path` **replaces** Prettier's defaults
+(`.gitignore` and `.prettierignore`), so name those again:
+
+```json
+{
+  "scripts": {
+    "format": "prettier --write . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path node_modules/@rheged-studio/prettier-config/prettierignore",
+    "format:check": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path node_modules/@rheged-studio/prettier-config/prettierignore"
+  }
+}
+```
+
+lint-staged needs the same flags on its `prettier --write` task, because Prettier skips ignored
+files even when they are passed explicitly. Patterns resolve from the working directory with
+`.gitignore` semantics, so run Prettier from the repo root. Keep repo-specific entries in the repo's
+own `.prettierignore`.
+
+## Versioning
+
+The package starts on 0.x (R-2934 D5). Changing a pinned option, or adding a plugin that reformats
+files, is a breaking change from 1.0.0 onwards (R-2947). `infrastructure/tests/preset.test.ts`
+fails when a new Prettier release changes a default or adds a formatting option, so a Prettier
+upgrade can't silently move the pins.
 
 ## Development
 
 ```bash
 pnpm install
-pnpm tsc            # type-check the repo's own tooling
-pnpm lint           # eslint (infrastructure/tests)
-pnpm test           # vitest
+pnpm tsc            # type-check the preset (checkJs) and the repo's tooling
+pnpm lint           # eslint (index.mjs, prettier.config.mjs, infrastructure/tests)
+pnpm test           # vitest, including the preset tests below
 pnpm lint:md        # markdownlint
 ```
 
-Ship changes with `/send-it`. See [`CLAUDE.md`](CLAUDE.md) for the full command list, the CI gate and
-the release shell.
+`pnpm test` packs the package, installs the tarball into throwaway consumers under `.fixtures/`
+(one at the Prettier floor, 3.5.3, and one at the version the repo resolves), and checks:
+
+- `fixtures/formatted/` passes `prettier --check`, with and without the preset;
+- each file in `fixtures/unformatted/` fails the check and formats to its counterpart;
+- the shipped `prettierignore` skips everything in `fixtures/ignored/`;
+- every pinned option equals that Prettier version's default.
+
+The repo formats itself with the preset it ships (`prettier.config.mjs`). Ship changes with
+`/send-it`. See [`CLAUDE.md`](CLAUDE.md) for the full command list, the CI gate and the release
+shell.
 
 ## Setup
 

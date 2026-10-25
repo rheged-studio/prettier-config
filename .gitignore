@@ -27,3 +27,6 @@ coverage/
 
 # preflight skill scratch output (written at the repo root on each run)
 .preflight-summary.json
+
+# Preset test consumers (infrastructure/tests/preset.test.ts)
+.fixtures/

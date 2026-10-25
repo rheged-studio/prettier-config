@@ -26,6 +26,20 @@ _Avoid_: The bot, Roadrunner
 The single aggregator check-run that ends `ci.yml` and is the required check on `main`. It passes only when every real CI job succeeded or was skipped, and Clacks waits on it before merging a release PR.
 _Avoid_: Build & Lint, CI gate, status check
 
+### Preset
+
+**Preset**:
+The Prettier config object exported from `index.mjs` and consumed through `"prettier": "@rheged-studio/prettier-config"` or by spreading it in `prettier.config.mjs`.
+_Avoid_: Prettierrc, shared config file
+
+**Pinned defaults**:
+The preset's rule that every Prettier formatting option is set explicitly to Prettier's own default (R-2934 D1), so adopting it reformats nothing and a Prettier default change needs a deliberate release.
+_Avoid_: House style, opinions
+
+**Shared ignore list**:
+The `prettierignore` file the package ships, passed to Prettier with `--ignore-path` alongside the repo's own ignore files (R-2934 D9).
+_Avoid_: Shared .prettierignore
+
 ### Publishing
 
 **Publish surface**:
