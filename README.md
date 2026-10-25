@@ -6,8 +6,9 @@ unconfigured, and a future change to a Prettier default only reaches the estate 
 deliberate release of this package. The Tailwind CSS and Astro plugins are built in, so consumers
 stop installing them by hand.
 
-> **Status: pre-release.** The package is not on npm yet; the first publish is R-2936. The v1
-> decisions are recorded on R-2934 in the **prettier-config** Linear project.
+> **Status: 0.x.** Published to npm from `0.1.0` (R-2936); 1.0.0 follows once the preset has proved
+> itself in consumers (R-2947). The v1 decisions are recorded on R-2934 in the **prettier-config**
+> Linear project.
 
 ## Requirements
 
@@ -178,14 +179,14 @@ Done in R-2933:
 - [x] `Require GO/NO GO gate` and `Trunk` rulesets, both with the road-runner-bot bypass.
 - [x] `main`-only `npm-release` environment; `Release` workflow enabled.
 - [x] `v0.0.0` baseline tag, so `Release` no-ops the publish while `changelog-enrich` runs.
-- [ ] Registered in Clacks `fleet.json` with `release: null` (clacks#178; changelog only, no release
-      PRs).
+- [x] Registered in Clacks `fleet.json` with `release: null` (changelog only, no release PRs).
 - [x] Claude review prerequisites inherited org-wide.
 
-Left for R-2936:
+Done in R-2936:
 
-- [ ] [Bootstrap publish](#npm-oidc-trusted-publishing) and the Trusted Publisher.
-- [ ] Flip the Clacks `fleet.json` entry to `release: "npm"`.
+- [x] [Bootstrap publish](#npm-oidc-trusted-publishing) of `0.1.0`, the `v0.1.0` tag and GitHub
+      Release, and the Trusted Publisher.
+- [x] Flipped the Clacks `fleet.json` entry to `release: "npm"`.
 
 ### Repo-level settings
 
@@ -341,8 +342,8 @@ from publish #2.
 
 ### Enable the Release workflow
 
-The Release workflow (`pkg-release.yml`) is **enabled** on this repo (R-2933); the `v0.0.0` baseline
-tag keeps it from publishing until R-2936. Its workflow **name** is `Release`, so it is toggled by
+The Release workflow (`pkg-release.yml`) is **enabled** on this repo (R-2933) and has published
+through CI since the `0.1.0` bootstrap (R-2936). Its workflow **name** is `Release`, so it is toggled by
 name:
 
 ```bash
