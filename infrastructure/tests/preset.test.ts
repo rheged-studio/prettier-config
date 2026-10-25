@@ -1,5 +1,5 @@
 /**
- * Preset smoke tests (R-2935, decisions on R-2934).
+ * Preset smoke tests (R-2935, R-2931; decisions on R-2934).
  *
  * The suite packs the package once and installs the tarball, with its real
  * dependencies, into one throwaway consumer per supported Prettier version
@@ -12,6 +12,12 @@
  *   same name in `fixtures/formatted/`.
  * - `fixtures/ignored/` holds unformatted files the shipped `prettierignore`
  *   must skip.
+ * - `fixtures/stylesheet/` is a consumer config that spreads the preset and
+ *   sets `tailwindStylesheet`, so a Tailwind v4 `@theme` utility sorts.
+ *
+ * The consumers install only `prettier` and the preset, never the plugins,
+ * so the Tailwind and Astro fixtures prove the preset resolves its own plugins
+ * (the R-2911 crash class).
  */
 import { execFileSync, spawnSync } from "node:child_process";
 import {
@@ -38,12 +44,19 @@ const installedPrettier = (
 
 // The peer floor (R-2934 D12) and the version the repo itself resolves.
 const prettierVersions = [
-  ["floor", "3.5.3"],
+  ["floor", "3.7.0"],
   ["latest", installedPrettier],
 ] as const;
 
-// Options that are not formatting choices, so the preset leaves them alone.
-const unpinnedOptions = new Set(["parser", "plugins"]);
+// Keys that are not core formatting choices: Prettier's own `parser` and
+// `plugins`, and the preset's plugin wiring, which the pin check skips.
+const unpinnedOptions = new Set([
+  "overrides",
+  "parser",
+  "plugins",
+  "tailwindFunctions",
+]);
+const pluginNames = ["prettier-plugin-astro", "prettier-plugin-tailwindcss"];
 const formattingCategories = new Set([
   "Common",
   "Global",
@@ -211,7 +224,48 @@ describe.each(prettierVersions)("Prettier %s (%s)", (label, version) => {
         { cwd, encoding: "utf8" },
       ),
     ) as Record<string, unknown>;
-    expect(resolved).toMatchObject(presetConfig());
+    // resolveConfig applies `overrides` for the file and drops them, and
+    // resolves `plugins` from the consumer, so both are checked elsewhere.
+    const { overrides, plugins, ...expected } = presetConfig();
+    expect(overrides).toBeDefined();
+    expect(plugins).toBeDefined();
+    expect(resolved).toMatchObject(expected);
+  });
+
+  it("loads its own plugins, Tailwind last, without the consumer installing them", () => {
+    const resolved = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          'const { resolveConfig } = await import("prettier"); console.log(JSON.stringify(await resolveConfig("fixtures/formatted/example.ts")));',
+        ],
+        { cwd, encoding: "utf8" },
+      ),
+    ) as { plugins: string[] };
+    expect(resolved.plugins).toHaveLength(pluginNames.length);
+    for (const [index, name] of pluginNames.entries()) {
+      expect(resolved.plugins[index]).toContain(`/node_modules/${name}/`);
+    }
+
+    const topLevel = readdirSync(join(cwd, "node_modules"));
+    for (const name of pluginNames) {
+      expect(topLevel).not.toContain(name);
+    }
+  });
+
+  it("sorts a Tailwind v4 theme utility once tailwindStylesheet is set", () => {
+    const directory = "fixtures/stylesheet";
+    expect(runPrettier(cwd, [`${directory}/page.html`]).stdout).toBe(
+      readFileSync(
+        join(fixturesDirectory, "stylesheet/page.expected.html"),
+        "utf8",
+      ),
+    );
+    expect(
+      runPrettier(cwd, ["--check", `${directory}/page.expected.html`]).status,
+    ).toBe(0);
   });
 
   it("passes the formatted fixtures", () => {
@@ -226,6 +280,7 @@ describe.each(prettierVersions)("Prettier %s (%s)", (label, version) => {
   it("formats nothing a config-free Prettier would leave alone (D1)", () => {
     const { output, status } = runPrettier(cwd, [
       "--no-config",
+      "--ignore-unknown",
       "--check",
       "fixtures/formatted",
     ]);

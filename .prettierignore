@@ -5,3 +5,4 @@ tsconfig.json
 fixtures/unformatted/
 fixtures/ignored/
 .fixtures/
+fixtures/stylesheet/

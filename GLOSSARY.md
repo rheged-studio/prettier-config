@@ -36,6 +36,10 @@ _Avoid_: Prettierrc, shared config file
 The preset's rule that every Prettier formatting option is set explicitly to Prettier's own default (R-2934 D1), so adopting it reformats nothing and a Prettier default change needs a deliberate release.
 _Avoid_: House style, opinions
 
+**Built-in plugins**:
+`prettier-plugin-astro` and `prettier-plugin-tailwindcss`, which the preset resolves from its own dependencies by absolute path, so consumers never install them (R-2934 D2, D8, D13).
+_Avoid_: Peer plugins, plugin autoload
+
 **Shared ignore list**:
 The `prettierignore` file the package ships, passed to Prettier with `--ignore-path` alongside the repo's own ignore files (R-2934 D9).
 _Avoid_: Shared .prettierignore

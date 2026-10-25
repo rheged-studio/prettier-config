@@ -3,15 +3,16 @@
 The shared Prettier preset for the Rheged Studio estate. It pins every Prettier formatting option to
 Prettier's own default, so adopting it reformats nothing in a repo that already runs Prettier
 unconfigured, and a future change to a Prettier default only reaches the estate through a
-deliberate release of this package. The Tailwind CSS and Astro plugins join the preset in R-2931,
-so consumers stop installing them by hand.
+deliberate release of this package. The Tailwind CSS and Astro plugins are built in, so consumers
+stop installing them by hand.
 
 > **Status: pre-release.** The package is not on npm yet; the first publish is R-2936. The v1
 > decisions are recorded on R-2934 in the **prettier-config** Linear project.
 
 ## Requirements
 
-- Prettier `>=3.5.3` (a peer dependency with no upper cap; R-2934 D4, D12).
+- Prettier `>=3.7.0` (a peer dependency with no upper cap; R-2934 D4, D12). The Tailwind plugin
+  crashes on older 3.x releases.
 - Node 22 and pnpm (pinned via `packageManager`) to work on this repo.
 
 ## Install
@@ -49,6 +50,64 @@ export default {
 Keep the preset's `overrides` when you add your own, as above. Changing a pinned option locally is
 possible, but it moves the repo away from the estate's formatting; raise it here instead if every
 repo should change.
+
+## Tailwind CSS and Astro
+
+The preset loads `prettier-plugin-astro` and `prettier-plugin-tailwindcss` itself (R-2934 D2, D8). They
+are this package's own dependencies, resolved to absolute paths inside the preset, so **don't
+install them in the consumer**. Remove any `prettier-plugin-tailwindcss` devDependency when
+adopting. Tailwind classes are sorted in every file type the plugin supports, including `class`
+and `class:list` in `.astro` files, and inside `cn()` and `clsx()` calls. `prettier --check` fails on
+unsorted classes. A repo that doesn't use Tailwind pays nothing for this beyond the install.
+
+### Point the plugin at your Tailwind v4 stylesheet
+
+Under Tailwind v4 the plugin reads the project's theme from its CSS entry point. Without it, custom
+utilities from `@theme` sort as unknown classes, at the front of the list. Set `tailwindStylesheet`
+in `prettier.config.mjs`; paths resolve from the config file:
+
+```js
+import preset from "@rheged-studio/prettier-config";
+
+/** @type {import("prettier").Config} */
+export default {
+  ...preset,
+  tailwindStylesheet: "./app/styles/app.css",
+};
+```
+
+In a monorepo, each app has its own stylesheet, so set it per app with `overrides`. Keep the
+preset's own overrides, which give `.astro` files their parser:
+
+```js
+import preset from "@rheged-studio/prettier-config";
+
+/** @type {import("prettier").Config} */
+export default {
+  ...preset,
+  overrides: [
+    ...(preset.overrides ?? []),
+    {
+      files: "apps/testbed/**",
+      options: { tailwindStylesheet: "./apps/testbed/app/styles/app.css" },
+    },
+    {
+      files: "apps/wizard/**",
+      options: { tailwindStylesheet: "./apps/wizard/app/styles/app.css" },
+    },
+  ],
+};
+```
+
+Tailwind itself doesn't need to be installed for sorting to work; the plugin falls back to its
+bundled copy (R-2934 D13).
+
+### Astro plugin version
+
+`prettier-plugin-astro` is pinned to `~0.14.1` (R-2934 D11). Versions 1.0 to 1.1.1 still format
+`.astro` files, but with the current Tailwind plugin they silently stop sorting their classes. The
+preset moves to 1.x once a Tailwind plugin release supports it, and a test fixture catches the
+regression either way.
 
 ## Shared ignore list
 
@@ -91,12 +150,16 @@ pnpm lint:md        # markdownlint
 ```
 
 `pnpm test` packs the package, installs the tarball into throwaway consumers under `.fixtures/`
-(one at the Prettier floor, 3.5.3, and one at the version the repo resolves), and checks:
+(one at the Prettier floor, 3.7.0, and one at the version the repo resolves). Neither consumer
+installs the plugins, so the checks also prove the preset resolves its own. It checks that:
 
-- `fixtures/formatted/` passes `prettier --check`, with and without the preset;
+- `fixtures/formatted/` passes `prettier --check`, with the preset and (for core file types)
+  without it;
 - each file in `fixtures/unformatted/` fails the check and formats to its counterpart;
 - the shipped `prettierignore` skips everything in `fixtures/ignored/`;
-- every pinned option equals that Prettier version's default.
+- every pinned option equals that Prettier version's default;
+- `fixtures/stylesheet/` sorts a Tailwind v4 `@theme` utility once `tailwindStylesheet` is set;
+- the plugins load from the preset, Tailwind last, and aren't installed in the consumer.
 
 The repo formats itself with the preset it ships (`prettier.config.mjs`). Ship changes with
 `/send-it`. See [`CLAUDE.md`](CLAUDE.md) for the full command list, the CI gate and the release
